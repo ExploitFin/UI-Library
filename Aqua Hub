@@ -81,6 +81,13 @@ function Library:NewButton(name, callback)
     UICorner.Parent = Button
     UICorner.CornerRadius = UDim.new(0, 10)
 
+    Button.MouseEnter:Connect(function()
+        Button:TweenSize(UDim2.new(0.9, 0, 0, buttonHeight * 1.1), Enum.EasingDirection.Out, Enum.EasingStyle.Quint, 0.2, true)
+    end)
+    Button.MouseLeave:Connect(function()
+        Button:TweenSize(UDim2.new(0.9, 0, 0, buttonHeight), Enum.EasingDirection.Out, Enum.EasingStyle.Quint, 0.2, true)
+    end)
+    
     Button.MouseButton1Click:Connect(function()
         callback()
     end)
@@ -132,11 +139,18 @@ function Library:NewToggle(name, callback)
     Toggle.TextSize = 16
 
     local ToggleSquare = Instance.new("Frame")
-    ToggleSquare.Parent = button
+    ToggleSquare.Parent = Toggle
     ToggleSquare.Size = UDim2.new(0, 16, 0, 16)
     ToggleSquare.Position = UDim2.new(1, -22, 0.5, -8)
     ToggleSquare.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     ToggleSquare.BorderSizePixel = 0
+    
+    Toggle.MouseEnter:Connect(function()
+        Toggle:TweenSize(UDim2.new(0.9, 0, 0, buttonHeight * 1.1), Enum.EasingDirection.Out, Enum.EasingStyle.Quint, 0.2, true)
+    end)
+    Toggle.MouseLeave:Connect(function()
+        Toggle:TweenSize(UDim2.new(0.9, 0, 0, buttonHeight), Enum.EasingDirection.Out, Enum.EasingStyle.Quint, 0.2, true)
+    end)
 
     local UICorner = Instance.new("UICorner")
     UICorner.Parent = Toggle
@@ -207,12 +221,17 @@ spawn(function()
     end
 end)
 
+local isMinimized = false -- Added variable definition
+local frameHeight = headerHeight + padding -- Fallback height calculation
+
 MinimizeButton.MouseButton1Click:Connect(function()
     isMinimized = not isMinimized
     if isMinimized then
         MinimizeButton.Text = "+"
         for _, element in ipairs(elements) do
-            element.Visible = false 
+            if element then
+                element.Visible = false 
+            end
         end
         Separator.Visible = false 
 
@@ -220,19 +239,17 @@ MinimizeButton.MouseButton1Click:Connect(function()
     else
         MinimizeButton.Text = "-"
         for _, element in ipairs(elements) do
-            element.Visible = true  
+            if element then
+                element.Visible = true  
+            end
         end
         Separator.Visible = true  
 
-        
-        MainFrame:TweenSize(UDim2.new(0, 160, 0, frameHeight), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
+        MainFrame:TweenSize(UDim2.new(0, 160, 0, MainFrame.Size.Y.Offset), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
     end
 end)
 
-MainFrame.Visible = true
-
 MainFrame.Size = UDim2.new(0, 0, 0, 0) 
 MainFrame:TweenSize(UDim2.new(0, 160, 0, frameHeight), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.5, true)
-
 
 return Library
