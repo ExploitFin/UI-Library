@@ -1,131 +1,238 @@
 local Library = {}
-
-local UIS = game:GetService("UserInputService")
-local TweenService = game:GetService("TweenService")
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-
+local elements = {}
 local buttonHeight = 36
 local buttonSpacing = 8
 local headerHeight = 36
 local padding = 16
 
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
 local MainFrame = Instance.new("Frame")
+MainFrame.Parent = ScreenGui
 MainFrame.Size = UDim2.new(0, 160, 0, 0)
 MainFrame.Position = UDim2.new(0.5, -80, 0.5, 0)
 MainFrame.BackgroundColor3 = Color3.fromRGB(25, 135, 190)
-MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 MainFrame.BorderSizePixel = 0
+MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+MainFrame.Active = true
 MainFrame.Visible = true
-MainFrame.Parent = ScreenGui
+MainFrame.Draggable = true
 
-local UICornerMain = Instance.new("UICorner", MainFrame)
+local UICornerMain = Instance.new("UICorner")
+UICornerMain.Parent = MainFrame
 UICornerMain.CornerRadius = UDim.new(0, 12)
 
-local UIGradient = Instance.new("UIGradient", MainFrame)
+local UIGradient = Instance.new("UIGradient")
+UIGradient.Parent = MainFrame
 UIGradient.Color = ColorSequence.new{
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 185, 235)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 90, 140))
+    ColorSequenceKeypoint.new(0.0, Color3.fromRGB(0, 185, 235)),
+    ColorSequenceKeypoint.new(1.0, Color3.fromRGB(0, 90, 140))
 }
 UIGradient.Rotation = 90
 
-local Header = Instance.new("TextLabel", MainFrame)
+local Header = Instance.new("TextLabel")
+Header.Parent = MainFrame
 Header.Size = UDim2.new(1, 0, 0, headerHeight)
+Header.Position = UDim2.new(0, 0, 0, 0)
 Header.BackgroundTransparency = 1
 Header.Text = "Aqua Hub"
 Header.TextColor3 = Color3.fromRGB(255, 255, 255)
 Header.Font = Enum.Font.GothamBold
 Header.TextSize = 18
+Header.TextXAlignment = Enum.TextXAlignment.Center
 
-local MinimizeButton = Instance.new("TextButton", Header)
+local MinimizeButton = Instance.new("TextButton")
+MinimizeButton.Parent = Header
 MinimizeButton.Size = UDim2.new(0, 24, 0, 24)
 MinimizeButton.Position = UDim2.new(1, -30, 0.5, -12)
-MinimizeButton.Text = "-"
 MinimizeButton.BackgroundColor3 = Color3.fromRGB(0, 160, 200)
+MinimizeButton.Text = "-"
 MinimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 MinimizeButton.Font = Enum.Font.GothamBold
 MinimizeButton.TextSize = 18
+MinimizeButton.BorderSizePixel = 0
 
-local UICornerMinimize = Instance.new("UICorner", MinimizeButton)
+local UICornerMinimize = Instance.new("UICorner")
+UICornerMinimize.Parent = MinimizeButton
 UICornerMinimize.CornerRadius = UDim.new(0, 12)
 
-local Separator = Instance.new("Frame", MainFrame)
+local Separator = Instance.new("Frame")
+Separator.Parent = MainFrame
 Separator.Size = UDim2.new(0.9, 0, 0, 1)
 Separator.Position = UDim2.new(0.05, 0, 0, headerHeight + 3)
 Separator.BackgroundColor3 = Color3.fromRGB(0, 160, 200)
 
-local elements = {}
-local isMinimized = false
-
 function Library:NewButton(name, callback)
-    local button = Instance.new("TextButton", MainFrame)
-    button.Size = UDim2.new(0.9, 0, 0, buttonHeight)
-    button.BackgroundColor3 = Color3.fromRGB(0, 135, 180)
-    button.Text = name
-    button.TextColor3 = Color3.fromRGB(255, 255, 255)
-    button.Font = Enum.Font.Gotham
-    button.TextSize = 16
+    local buttonY = #elements * (buttonHeight + buttonSpacing) + headerHeight + padding
+    MainFrame.Size = UDim2.new(0, 160, 0, buttonY + buttonHeight + padding)
+    
+    local Button = Instance.new("TextButton")
+    Button.Parent = MainFrame
+    Button.Size = UDim2.new(0.9, 0, 0, buttonHeight)
+    Button.Position = UDim2.new(0.05, 0, 0, buttonY)
+    Button.BackgroundColor3 = Color3.fromRGB(0, 135, 180)
+    Button.Text = name
+    Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Button.Font = Enum.Font.Gotham
+    Button.TextSize = 16
 
-    local UICornerButton = Instance.new("UICorner", button)
-    UICornerButton.CornerRadius = UDim.new(0, 10)
+    local UICorner = Instance.new("UICorner")
+    UICorner.Parent = Button
+    UICorner.CornerRadius = UDim.new(0, 10)
 
-    button.MouseButton1Click:Connect(function()
+    Button.MouseButton1Click:Connect(function()
         callback()
     end)
-    table.insert(elements, button)
+
+    table.insert(elements, Button)
+    return Button
 end
 
 function Library:NewTextBox(placeholderText, callback)
-    local textBox = Instance.new("TextBox", MainFrame)
-    textBox.Size = UDim2.new(0.9, 0, 0, buttonHeight)
-    textBox.BackgroundColor3 = Color3.fromRGB(0, 135, 180)
-    textBox.Text = ""
-    textBox.PlaceholderText = placeholderText
-    textBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-    textBox.Font = Enum.Font.Gotham
-    textBox.TextSize = 16
-    textBox.ClearTextOnFocus = true
+    local boxY = #elements * (buttonHeight + buttonSpacing) + headerHeight + padding
+    MainFrame.Size = UDim2.new(0, 160, 0, boxY + buttonHeight + padding)
+    
+    local TextBox = Instance.new("TextBox")
+    TextBox.Parent = MainFrame
+    TextBox.Size = UDim2.new(0.9, 0, 0, buttonHeight)
+    TextBox.Position = UDim2.new(0.05, 0, 0, boxY)
+    TextBox.BackgroundColor3 = Color3.fromRGB(0, 135, 180)
+    TextBox.Text = ""
+    TextBox.PlaceholderText = placeholderText
+    TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+    TextBox.Font = Enum.Font.Gotham
+    TextBox.TextSize = 16
+    TextBox.ClearTextOnFocus = true
 
-    local UICornerTextBox = Instance.new("UICorner", textBox)
-    UICornerTextBox.CornerRadius = UDim.new(0, 10)
+    local UICorner = Instance.new("UICorner")
+    UICorner.Parent = TextBox
+    UICorner.CornerRadius = UDim.new(0, 10)
 
-    textBox.FocusLost:Connect(function(enterPressed)
-        if enterPressed then
-            callback(textBox.Text)
-        end
+    TextBox.FocusLost:Connect(function()
+        callback(TextBox.Text)
     end)
-    table.insert(elements, textBox)
+
+    table.insert(elements, TextBox)
+    return TextBox
 end
 
 function Library:NewToggle(name, callback)
-    local toggle = Instance.new("TextButton", MainFrame)
-    toggle.Size = UDim2.new(0.9, 0, 0, buttonHeight)
-    toggle.BackgroundColor3 = Color3.fromRGB(0, 135, 180)
-    toggle.Text = name
-    toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
-    toggle.Font = Enum.Font.Gotham
-    toggle.TextSize = 16
+    local toggleY = #elements * (buttonHeight + buttonSpacing) + headerHeight + padding
+    MainFrame.Size = UDim2.new(0, 160, 0, toggleY + buttonHeight + padding)
+    
+    local Toggle = Instance.new("TextButton")
+    Toggle.Parent = MainFrame
+    Toggle.Size = UDim2.new(0.9, 0, 0, buttonHeight)
+    Toggle.Position = UDim2.new(0.05, 0, 0, toggleY)
+    Toggle.BackgroundColor3 = Color3.fromRGB(0, 135, 180)
+    Toggle.Text = name
+    Toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Toggle.Font = Enum.Font.Gotham
+    Toggle.TextSize = 16
+
+    local ToggleSquare = Instance.new("Frame")
+    ToggleSquare.Parent = button
+    ToggleSquare.Size = UDim2.new(0, 16, 0, 16)
+    ToggleSquare.Position = UDim2.new(1, -22, 0.5, -8)
+    ToggleSquare.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    ToggleSquare.BorderSizePixel = 0
+
+    local UICorner = Instance.new("UICorner")
+    UICorner.Parent = Toggle
+    UICorner.CornerRadius = UDim.new(0, 10)
 
     local isToggled = false
-    toggle.MouseButton1Click:Connect(function()
+    Toggle.MouseButton1Click:Connect(function()
         isToggled = not isToggled
-        toggle.BackgroundColor3 = isToggled and Color3.fromRGB(80, 185, 125) or Color3.fromRGB(0, 135, 180)
+        Toggle.BackgroundColor3 = isToggled and Color3.fromRGB(80, 185, 125) or Color3.fromRGB(0, 135, 180)
+        ToggleSquare.BackgroundColor3 = isToggled and Color3.fromRGB(0, 160, 200) or Color3.fromRGB(255, 255, 255)
+        
         callback(isToggled)
     end)
 
-    local UICornerToggle = Instance.new("UICorner", toggle)
-    UICornerToggle.CornerRadius = UDim.new(0, 10)
-
-    table.insert(elements, toggle)
+    table.insert(elements, Toggle)
+    return Toggle
 end
+
+local TweenService = game:GetService("TweenService")
+
+local Credits = Instance.new("TextLabel")
+Credits.Parent = MainFrame
+Credits.Size = UDim2.new(1, -10, 0, 18)
+Credits.Position = UDim2.new(0.5, 0, 1, -8)
+Credits.AnchorPoint = Vector2.new(0.5, 1)
+Credits.BackgroundTransparency = 1
+Credits.Text = "@ExploitFin made this!"
+Credits.TextColor3 = Color3.fromRGB(180, 180, 180)
+Credits.Font = Enum.Font.Gotham
+Credits.TextSize = 12
+Credits.TextXAlignment = Enum.TextXAlignment.Center
+Credits.TextYAlignment = Enum.TextYAlignment.Bottom
+Credits.TextTransparency = 0.35
+table.insert(elements, Credits) 
+
+
+local messages = {
+    "@ExploitFin made this!",
+    "You should join my discord...",
+    "Make sure to follow me!"
+}
+local messageIndex = 1
+
+
+local function updateCreditsText()
+    
+        local fadeOutTween = TweenService:Create(Credits, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 1})
+    fadeOutTween:Play()
+    fadeOutTween.Completed:Wait()  
+
+    Credits.Text = messages[messageIndex]
+    if Credits.TextBounds.X > MainFrame.AbsoluteSize.X - 20 then
+        Credits.TextSize = 10  
+    else
+        Credits.TextSize = 12 
+    end
+
+    messageIndex = messageIndex % #messages + 1
+
+    local fadeInTween = TweenService:Create(Credits, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {TextTransparency = 0.35})
+    fadeInTween:Play()
+end
+
+spawn(function()
+    while true do
+        updateCreditsText()
+        wait(3) 
+    end
+end)
 
 MinimizeButton.MouseButton1Click:Connect(function()
     isMinimized = not isMinimized
-    MinimizeButton.Text = isMinimized and "+" or "-"
-    for _, element in ipairs(elements) do
-        element.Visible = not isMinimized
+    if isMinimized then
+        MinimizeButton.Text = "+"
+        for _, element in ipairs(elements) do
+            element.Visible = false 
+        end
+        Separator.Visible = false 
+
+        MainFrame:TweenSize(UDim2.new(0, 160, 0, headerHeight + 10), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
+    else
+        MinimizeButton.Text = "-"
+        for _, element in ipairs(elements) do
+            element.Visible = true  
+        end
+        Separator.Visible = true  
+
+        
+        MainFrame:TweenSize(UDim2.new(0, 160, 0, frameHeight), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
     end
-    Separator.Visible = not isMinimized
 end)
+
+MainFrame.Visible = true
+
+MainFrame.Size = UDim2.new(0, 0, 0, 0) 
+MainFrame:TweenSize(UDim2.new(0, 160, 0, frameHeight), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.5, true)
+
 
 return Library
