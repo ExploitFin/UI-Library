@@ -1,17 +1,19 @@
 local Library = {}
 local elements = {}
+local isMinimized = false
 local buttonHeight = 36
 local buttonSpacing = 8
 local headerHeight = 36
 local padding = 16
+local frameHeight = headerHeight + padding + (#buttonLabels * buttonHeight) + ((#buttonLabels - 1) * buttonSpacing) + padding + 15
 
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
 local MainFrame = Instance.new("Frame")
 MainFrame.Parent = ScreenGui
-MainFrame.Size = UDim2.new(0, 160, 0, headerHeight + padding)  -- Initialize with header height only
-MainFrame.Position = UDim2.new(0.5, -80, 0.5, 0)
+MainFrame.Size = UDim2.new(0, 160, 0, frameHeight)
+MainFrame.Position = UDim2.new(0.5, -80, 0.5, -frameHeight / 2)
 MainFrame.BackgroundColor3 = Color3.fromRGB(25, 135, 190)
 MainFrame.BorderSizePixel = 0
 MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -145,6 +147,10 @@ function Library:NewToggle(name, callback)
     ToggleSquare.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     ToggleSquare.BorderSizePixel = 0
     
+    local UICornerToggle = Instance.new("UICorner")
+    UICornerToggle.Parent = ToggleSquare
+    UICornerToggle.CornerRadius = UDim.new(0, 4)
+    
     Toggle.MouseEnter:Connect(function()
         Toggle:TweenSize(UDim2.new(0.9, 0, 0, buttonHeight * 1.1), Enum.EasingDirection.Out, Enum.EasingStyle.Quint, 0.2, true)
     end)
@@ -170,6 +176,7 @@ function Library:NewToggle(name, callback)
 end
 
 local TweenService = game:GetService("TweenService")
+
 
 local Credits = Instance.new("TextLabel")
 Credits.Parent = MainFrame
@@ -197,7 +204,7 @@ local messageIndex = 1
 
 local function updateCreditsText()
     
-        local fadeOutTween = TweenService:Create(Credits, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 1})
+    local fadeOutTween = TweenService:Create(Credits, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 1})
     fadeOutTween:Play()
     fadeOutTween.Completed:Wait()  
 
@@ -221,40 +228,33 @@ spawn(function()
     end
 end)
 
-local isMinimized = false -- Tracks whether the MainFrame is minimized
-local frameHeight = headerHeight + padding -- Default frame height if no buttons exist
 
 MinimizeButton.MouseButton1Click:Connect(function()
     isMinimized = not isMinimized
     if isMinimized then
         MinimizeButton.Text = "+"
         for _, element in ipairs(elements) do
-            if element then
-                element.Visible = false -- Hide all UI elements
-            end
+            element.Visible = false 
         end
         Separator.Visible = false 
-        Credits.Visible = false
+
         MainFrame:TweenSize(UDim2.new(0, 160, 0, headerHeight + 10), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
     else
         MinimizeButton.Text = "-"
         for _, element in ipairs(elements) do
-            if element then
-                element.Visible = true -- Show all UI elements
-            end
+            element.Visible = true  
         end
-        Separator.Visible = true 
-        Credits.Visible = true
+        Separator.Visible = true  
 
-        local fullHeight = (#elements * (buttonHeight + buttonSpacing)) + headerHeight + (2 * padding)
-        MainFrame:TweenSize(UDim2.new(0, 160, 0, fullHeight), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
+        
+        MainFrame:TweenSize(UDim2.new(0, 160, 0, frameHeight), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
     end
 end)
 
-local initialHeight = (#elements * (buttonHeight + buttonSpacing)) + headerHeight + (2 * padding)
-MainFrame.Size = UDim2.new(0, 160, 0, initialHeight)
-
 MainFrame.Visible = true
+
+MainFrame.Size = UDim2.new(0, 0, 0, 0) 
 MainFrame:TweenSize(UDim2.new(0, 160, 0, frameHeight), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.5, true)
+
 
 return Library
