@@ -1,136 +1,131 @@
 local Library = {}
-local elements = {}
+
+local UIS = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
 local buttonHeight = 36
 local buttonSpacing = 8
 local headerHeight = 36
 local padding = 16
 
--- Main GUI Setup
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-
 local MainFrame = Instance.new("Frame")
-MainFrame.Parent = ScreenGui
 MainFrame.Size = UDim2.new(0, 160, 0, 0)
 MainFrame.Position = UDim2.new(0.5, -80, 0.5, 0)
 MainFrame.BackgroundColor3 = Color3.fromRGB(25, 135, 190)
-MainFrame.BorderSizePixel = 0
 MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-MainFrame.Active = true
+MainFrame.BorderSizePixel = 0
 MainFrame.Visible = true
-MainFrame.Draggable = true
+MainFrame.Parent = ScreenGui
 
-local UICornerMain = Instance.new("UICorner")
-UICornerMain.Parent = MainFrame
+local UICornerMain = Instance.new("UICorner", MainFrame)
 UICornerMain.CornerRadius = UDim.new(0, 12)
 
-local UIGradient = Instance.new("UIGradient")
-UIGradient.Parent = MainFrame
+local UIGradient = Instance.new("UIGradient", MainFrame)
 UIGradient.Color = ColorSequence.new{
-    ColorSequenceKeypoint.new(0.0, Color3.fromRGB(0, 185, 235)),
-    ColorSequenceKeypoint.new(1.0, Color3.fromRGB(0, 90, 140))
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 185, 235)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 90, 140))
 }
 UIGradient.Rotation = 90
 
-local Header = Instance.new("TextLabel")
-Header.Parent = MainFrame
+local Header = Instance.new("TextLabel", MainFrame)
 Header.Size = UDim2.new(1, 0, 0, headerHeight)
-Header.Position = UDim2.new(0, 0, 0, 0)
 Header.BackgroundTransparency = 1
 Header.Text = "Aqua Hub"
 Header.TextColor3 = Color3.fromRGB(255, 255, 255)
 Header.Font = Enum.Font.GothamBold
 Header.TextSize = 18
-Header.TextXAlignment = Enum.TextXAlignment.Center
 
-local Separator = Instance.new("Frame")
-Separator.Parent = MainFrame
+local MinimizeButton = Instance.new("TextButton", Header)
+MinimizeButton.Size = UDim2.new(0, 24, 0, 24)
+MinimizeButton.Position = UDim2.new(1, -30, 0.5, -12)
+MinimizeButton.Text = "-"
+MinimizeButton.BackgroundColor3 = Color3.fromRGB(0, 160, 200)
+MinimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+MinimizeButton.Font = Enum.Font.GothamBold
+MinimizeButton.TextSize = 18
+
+local UICornerMinimize = Instance.new("UICorner", MinimizeButton)
+UICornerMinimize.CornerRadius = UDim.new(0, 12)
+
+local Separator = Instance.new("Frame", MainFrame)
 Separator.Size = UDim2.new(0.9, 0, 0, 1)
 Separator.Position = UDim2.new(0.05, 0, 0, headerHeight + 3)
 Separator.BackgroundColor3 = Color3.fromRGB(0, 160, 200)
 
--- Button creation logic
+local elements = {}
+local isMinimized = false
+
 function Library:NewButton(name, callback)
-    local buttonY = #elements * (buttonHeight + buttonSpacing) + headerHeight + padding
-    MainFrame.Size = UDim2.new(0, 160, 0, buttonY + buttonHeight + padding)
-    
-    local Button = Instance.new("TextButton")
-    Button.Parent = MainFrame
-    Button.Size = UDim2.new(0.9, 0, 0, buttonHeight)
-    Button.Position = UDim2.new(0.05, 0, 0, buttonY)
-    Button.BackgroundColor3 = Color3.fromRGB(0, 135, 180)
-    Button.Text = name
-    Button.TextColor3 = Color3.fromRGB(255, 255, 255)
-    Button.Font = Enum.Font.Gotham
-    Button.TextSize = 16
+    local button = Instance.new("TextButton", MainFrame)
+    button.Size = UDim2.new(0.9, 0, 0, buttonHeight)
+    button.BackgroundColor3 = Color3.fromRGB(0, 135, 180)
+    button.Text = name
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.Font = Enum.Font.Gotham
+    button.TextSize = 16
 
-    local UICorner = Instance.new("UICorner")
-    UICorner.Parent = Button
-    UICorner.CornerRadius = UDim.new(0, 10)
+    local UICornerButton = Instance.new("UICorner", button)
+    UICornerButton.CornerRadius = UDim.new(0, 10)
 
-    Button.MouseButton1Click:Connect(function()
+    button.MouseButton1Click:Connect(function()
         callback()
     end)
-
-    table.insert(elements, Button)
-    return Button
+    table.insert(elements, button)
 end
 
 function Library:NewTextBox(placeholderText, callback)
-    local boxY = #elements * (buttonHeight + buttonSpacing) + headerHeight + padding
-    MainFrame.Size = UDim2.new(0, 160, 0, boxY + buttonHeight + padding)
-    
-    local TextBox = Instance.new("TextBox")
-    TextBox.Parent = MainFrame
-    TextBox.Size = UDim2.new(0.9, 0, 0, buttonHeight)
-    TextBox.Position = UDim2.new(0.05, 0, 0, boxY)
-    TextBox.BackgroundColor3 = Color3.fromRGB(0, 135, 180)
-    TextBox.Text = ""
-    TextBox.PlaceholderText = placeholderText
-    TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-    TextBox.Font = Enum.Font.Gotham
-    TextBox.TextSize = 16
-    TextBox.ClearTextOnFocus = true
+    local textBox = Instance.new("TextBox", MainFrame)
+    textBox.Size = UDim2.new(0.9, 0, 0, buttonHeight)
+    textBox.BackgroundColor3 = Color3.fromRGB(0, 135, 180)
+    textBox.Text = ""
+    textBox.PlaceholderText = placeholderText
+    textBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+    textBox.Font = Enum.Font.Gotham
+    textBox.TextSize = 16
+    textBox.ClearTextOnFocus = true
 
-    local UICorner = Instance.new("UICorner")
-    UICorner.Parent = TextBox
-    UICorner.CornerRadius = UDim.new(0, 10)
+    local UICornerTextBox = Instance.new("UICorner", textBox)
+    UICornerTextBox.CornerRadius = UDim.new(0, 10)
 
-    TextBox.FocusLost:Connect(function()
-        callback(TextBox.Text)
+    textBox.FocusLost:Connect(function(enterPressed)
+        if enterPressed then
+            callback(textBox.Text)
+        end
     end)
-
-    table.insert(elements, TextBox)
-    return TextBox
+    table.insert(elements, textBox)
 end
 
 function Library:NewToggle(name, callback)
-    local toggleY = #elements * (buttonHeight + buttonSpacing) + headerHeight + padding
-    MainFrame.Size = UDim2.new(0, 160, 0, toggleY + buttonHeight + padding)
-    
-    local Toggle = Instance.new("TextButton")
-    Toggle.Parent = MainFrame
-    Toggle.Size = UDim2.new(0.9, 0, 0, buttonHeight)
-    Toggle.Position = UDim2.new(0.05, 0, 0, toggleY)
-    Toggle.BackgroundColor3 = Color3.fromRGB(0, 135, 180)
-    Toggle.Text = name
-    Toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
-    Toggle.Font = Enum.Font.Gotham
-    Toggle.TextSize = 16
-
-    local UICorner = Instance.new("UICorner")
-    UICorner.Parent = Toggle
-    UICorner.CornerRadius = UDim.new(0, 10)
+    local toggle = Instance.new("TextButton", MainFrame)
+    toggle.Size = UDim2.new(0.9, 0, 0, buttonHeight)
+    toggle.BackgroundColor3 = Color3.fromRGB(0, 135, 180)
+    toggle.Text = name
+    toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+    toggle.Font = Enum.Font.Gotham
+    toggle.TextSize = 16
 
     local isToggled = false
-    Toggle.MouseButton1Click:Connect(function()
+    toggle.MouseButton1Click:Connect(function()
         isToggled = not isToggled
-        Toggle.BackgroundColor3 = isToggled and Color3.fromRGB(80, 185, 125) or Color3.fromRGB(0, 135, 180)
+        toggle.BackgroundColor3 = isToggled and Color3.fromRGB(80, 185, 125) or Color3.fromRGB(0, 135, 180)
         callback(isToggled)
     end)
 
-    table.insert(elements, Toggle)
-    return Toggle
+    local UICornerToggle = Instance.new("UICorner", toggle)
+    UICornerToggle.CornerRadius = UDim.new(0, 10)
+
+    table.insert(elements, toggle)
 end
+
+MinimizeButton.MouseButton1Click:Connect(function()
+    isMinimized = not isMinimized
+    MinimizeButton.Text = isMinimized and "+" or "-"
+    for _, element in ipairs(elements) do
+        element.Visible = not isMinimized
+    end
+    Separator.Visible = not isMinimized
+end)
 
 return Library
