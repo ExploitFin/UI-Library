@@ -5,8 +5,7 @@ local buttonSpacing = 8
 local headerHeight = 36
 local padding = 16
 
--- Calculate frame height considering minimized state
-local frameHeight = headerHeight + padding + (#elements * buttonHeight) + ((#elements - 1) * buttonSpacing) + padding
+local frameHeight = headerHeight + (#elements * buttonHeight) + ((#elements - 1) * buttonSpacing) + padding + 50
 
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
@@ -19,7 +18,7 @@ MainFrame.BackgroundColor3 = Color3.fromRGB(25, 135, 190)
 MainFrame.BorderSizePixel = 0
 MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 MainFrame.Active = true
-MainFrame.Draggable = true
+MainFramw.Draggable = true
 
 local UICornerMain = Instance.new("UICorner")
 UICornerMain.Parent = MainFrame
@@ -181,7 +180,7 @@ local TweenService = game:GetService("TweenService")
 local Credits = Instance.new("TextLabel")
 Credits.Parent = MainFrame
 Credits.Size = UDim2.new(1, -10, 0, 18)
-Credits.Position = UDim2.new(0.5, 0, 1, -8)
+Credits.Position = UDim2.new(0.5, 0, 1, -30)  -- Increased value for more space
 Credits.AnchorPoint = Vector2.new(0.5, 1)
 Credits.BackgroundTransparency = 1
 Credits.Text = "@ExploitFin made this"
@@ -246,8 +245,7 @@ MinimizeButton.MouseButton1Click:Connect(function()
         end
         Separator.Visible = true
         
-        local frameHeight = headerHeight + padding + (#elements * buttonHeight) + ((#elements - 1) * buttonSpacing) + padding
-
+        local frameHeight = headerHeight + (#elements * buttonHeight) + ((#elements - 1) * buttonSpacing) + padding + 50
         MainFrame:TweenSize(UDim2.new(0, 160, 0, frameHeight), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
     end
 end)
