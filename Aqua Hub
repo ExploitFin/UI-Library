@@ -6,19 +6,20 @@ local headerHeight = 36
 local padding = 16
 
 -- Calculate frame height considering minimized state
-local frameHeight = headerHeight + padding + (#elements * buttonHeight) + ((#elements - 1) * buttonSpacing) + padding + 5
+local frameHeight = headerHeight + padding + (#elements * buttonHeight) + ((#elements - 1) * buttonSpacing) + padding
 
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
 local MainFrame = Instance.new("Frame")
 MainFrame.Parent = ScreenGui
-MainFrame.Size = UDim2.new(0, 160, 0, frameHeight) -- Set initial minimized size
+MainFrame.Size = UDim2.new(0, 160, 0, frameHeight)
 MainFrame.Position = UDim2.new(0.5, -80, 0.5, -frameHeight / 2)
 MainFrame.BackgroundColor3 = Color3.fromRGB(25, 135, 190)
 MainFrame.BorderSizePixel = 0
 MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 MainFrame.Active = true
+MainFramw.Draggable = true
 
 local UICornerMain = Instance.new("UICorner")
 UICornerMain.Parent = MainFrame
@@ -183,7 +184,7 @@ Credits.Size = UDim2.new(1, -10, 0, 18)
 Credits.Position = UDim2.new(0.5, 0, 1, -8)
 Credits.AnchorPoint = Vector2.new(0.5, 1)
 Credits.BackgroundTransparency = 1
-Credits.Text = "@ExploitFin made this!"
+Credits.Text = "@ExploitFin made this"
 Credits.TextColor3 = Color3.fromRGB(180, 180, 180)
 Credits.Font = Enum.Font.Gotham
 Credits.TextSize = 12
@@ -194,9 +195,8 @@ table.insert(elements, Credits)
 
 
 local messages = {
-    "@ExploitFin made this!",
-    "You should join my discord...",
-    "Make sure to follow me!"
+    "@ExploitFin made this",
+    "You should join my discord.."
 }
 local messageIndex = 1
 
@@ -227,7 +227,6 @@ spawn(function()
     end
 end)
 
-
 local isMinimized = false
 
 MinimizeButton.MouseButton1Click:Connect(function()
@@ -246,9 +245,8 @@ MinimizeButton.MouseButton1Click:Connect(function()
             element.Visible = true
         end
         Separator.Visible = true
-
-        -- Recalculate the frame height based on the current number of visible elements
-        local frameHeight = headerHeight + padding + (#elements * buttonHeight) + ((#elements - 1) * buttonSpacing) + padding + 5
+        
+        local frameHeight = headerHeight + padding + (#elements * buttonHeight) + ((#elements - 1) * buttonSpacing) + padding
 
         MainFrame:TweenSize(UDim2.new(0, 160, 0, frameHeight), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
     end
