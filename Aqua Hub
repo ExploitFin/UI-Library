@@ -6,14 +6,14 @@ local headerHeight = 36
 local padding = 16
 
 -- Calculate frame height considering minimized state
-local frameHeight = headerHeight + padding + (#elements * buttonHeight) + ((#elements - 1) * buttonSpacing) + padding + 15
+local frameHeight = headerHeight + padding + (#elements * buttonHeight) + ((#elements - 1) * buttonSpacing) + padding + 5
 
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
 local MainFrame = Instance.new("Frame")
 MainFrame.Parent = ScreenGui
-MainFrame.Size = UDim2.new(0, 160, 0, frameHeight)
+MainFrame.Size = UDim2.new(0, 160, 0, frameHeight) -- Set initial minimized size
 MainFrame.Position = UDim2.new(0.5, -80, 0.5, -frameHeight / 2)
 MainFrame.BackgroundColor3 = Color3.fromRGB(25, 135, 190)
 MainFrame.BorderSizePixel = 0
@@ -246,6 +246,9 @@ MinimizeButton.MouseButton1Click:Connect(function()
             element.Visible = true
         end
         Separator.Visible = true
+
+        -- Recalculate the frame height based on the current number of visible elements
+        local frameHeight = headerHeight + padding + (#elements * buttonHeight) + ((#elements - 1) * buttonSpacing) + padding + 5
 
         MainFrame:TweenSize(UDim2.new(0, 160, 0, frameHeight), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
     end
