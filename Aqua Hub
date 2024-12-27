@@ -5,7 +5,7 @@ local buttonHeight = 36
 local buttonSpacing = 8
 local headerHeight = 36
 local padding = 16
-local frameHeight = headerHeight + padding + (#buttonLabels * buttonHeight) + ((#buttonLabels - 1) * buttonSpacing) + padding + 15
+local frameHeight = headerHeight + padding + (#elements * buttonHeight) + ((#elements - 1) * buttonSpacing) + padding + 15
 
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
