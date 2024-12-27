@@ -244,9 +244,15 @@ MinimizeButton.MouseButton1Click:Connect(function()
             element.Visible = true
         end
         Separator.Visible = true
-        
-        local frameHeight = headerHeight + (#elements * buttonHeight) + ((#elements - 1) * buttonSpacing) + padding + 50
-        MainFrame:TweenSize(UDim2.new(0, 160, 0, frameHeight), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
+
+        -- Dynamically calculate the frame height based on visible elements
+        local visibleHeight = headerHeight + padding
+        for _, element in ipairs(elements) do
+            if element.Visible then
+                visibleHeight = visibleHeight + element.Size.Y.Offset + buttonSpacing
+            end
+        end
+        MainFrame:TweenSize(UDim2.new(0, 160, 0, visibleHeight), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
     end
 end)
 
