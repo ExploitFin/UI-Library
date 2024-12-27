@@ -5,7 +5,7 @@ local buttonSpacing = 8
 local headerHeight = 36
 local padding = 16
 
-local frameHeight = headerHeight + (#elements * buttonHeight) + ((#elements - 1) * buttonSpacing) + padding + 50
+local frameHeight = headerHeight + (#elements * buttonHeight) + ((#elements - 1) * buttonSpacing) + padding + 15
 
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
@@ -65,9 +65,10 @@ Separator.Position = UDim2.new(0.05, 0, 0, headerHeight + 3)
 Separator.BackgroundColor3 = Color3.fromRGB(0, 160, 200)
 
 function Library:NewButton(name, callback)
-    local buttonY = #elements * (buttonHeight + buttonSpacing) + headerHeight + padding
-    MainFrame.Size = UDim2.new(0, 160, 0, buttonY + buttonHeight + padding)
-    
+    -- Calculate the position below the separator
+    local buttonY = #elements * (buttonHeight + buttonSpacing) + headerHeight + padding + 3 -- +3 to place below the separator
+    MainFrame.Size = UDim2.new(0, 160, 0, buttonY + buttonHeight + padding + 15) -- Adjust frame height for credits
+
     local Button = Instance.new("TextButton")
     Button.Parent = MainFrame
     Button.Size = UDim2.new(0.9, 0, 0, buttonHeight)
@@ -88,7 +89,7 @@ function Library:NewButton(name, callback)
     Button.MouseLeave:Connect(function()
         Button:TweenSize(UDim2.new(0.9, 0, 0, buttonHeight), Enum.EasingDirection.Out, Enum.EasingStyle.Quint, 0.2, true)
     end)
-    
+
     Button.MouseButton1Click:Connect(function()
         callback()
     end)
@@ -98,9 +99,10 @@ function Library:NewButton(name, callback)
 end
 
 function Library:NewTextBox(placeholderText, callback)
-    local boxY = #elements * (buttonHeight + buttonSpacing) + headerHeight + padding
-    MainFrame.Size = UDim2.new(0, 160, 0, boxY + buttonHeight + padding)
-    
+    -- Position the text box below the previous button
+    local boxY = #elements * (buttonHeight + buttonSpacing) + headerHeight + padding + 3
+    MainFrame.Size = UDim2.new(0, 160, 0, boxY + buttonHeight + padding + 15) -- Adjust frame height for credits
+
     local TextBox = Instance.new("TextBox")
     TextBox.Parent = MainFrame
     TextBox.Size = UDim2.new(0.9, 0, 0, buttonHeight)
@@ -126,8 +128,9 @@ function Library:NewTextBox(placeholderText, callback)
 end
 
 function Library:NewToggle(name, callback)
-    local toggleY = #elements * (buttonHeight + buttonSpacing) + headerHeight + padding
-    MainFrame.Size = UDim2.new(0, 160, 0, toggleY + buttonHeight + padding)
+    -- Position the toggle below the previous element
+    local toggleY = #elements * (buttonHeight + buttonSpacing) + headerHeight + padding + 3
+    MainFrame.Size = UDim2.new(0, 160, 0, toggleY + buttonHeight + padding + 15) -- Adjust frame height for credits
     
     local Toggle = Instance.new("TextButton")
     Toggle.Parent = MainFrame
@@ -145,7 +148,7 @@ function Library:NewToggle(name, callback)
     ToggleSquare.Position = UDim2.new(1, -22, 0.5, -8)
     ToggleSquare.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     ToggleSquare.BorderSizePixel = 0
-    
+
     local UICornerToggle = Instance.new("UICorner")
     UICornerToggle.Parent = ToggleSquare
     UICornerToggle.CornerRadius = UDim.new(0, 4)
@@ -174,13 +177,10 @@ function Library:NewToggle(name, callback)
     return Toggle
 end
 
-local TweenService = game:GetService("TweenService")
-
-
 local Credits = Instance.new("TextLabel")
 Credits.Parent = MainFrame
 Credits.Size = UDim2.new(1, -10, 0, 18)
-Credits.Position = UDim2.new(0.5, 0, 1, -30)  -- Increased value for more space
+Credits.Position = UDim2.new(0.5, 0, 1, -8)
 Credits.AnchorPoint = Vector2.new(0.5, 1)
 Credits.BackgroundTransparency = 1
 Credits.Text = "@ExploitFin made this"
@@ -190,7 +190,7 @@ Credits.TextSize = 12
 Credits.TextXAlignment = Enum.TextXAlignment.Center
 Credits.TextYAlignment = Enum.TextYAlignment.Bottom
 Credits.TextTransparency = 0.35
-table.insert(elements, Credits) 
+table.insert(elements, Credits)
 
 
 local messages = {
@@ -244,15 +244,9 @@ MinimizeButton.MouseButton1Click:Connect(function()
             element.Visible = true
         end
         Separator.Visible = true
-
-        -- Dynamically calculate the frame height based on visible elements
-        local visibleHeight = headerHeight + padding
-        for _, element in ipairs(elements) do
-            if element.Visible then
-                visibleHeight = visibleHeight + element.Size.Y.Offset + buttonSpacing
-            end
-        end
-        MainFrame:TweenSize(UDim2.new(0, 160, 0, visibleHeight), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
+        
+        local frameHeight = headerHeight + (#elements * buttonHeight) + ((#elements - 1) * buttonSpacing) + padding + 15
+        MainFrame:TweenSize(UDim2.new(0, 160, 0, frameHeight), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
     end
 end)
 
