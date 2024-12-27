@@ -1,10 +1,11 @@
 local Library = {}
 local elements = {}
-local isMinimized = false
 local buttonHeight = 36
 local buttonSpacing = 8
 local headerHeight = 36
 local padding = 16
+
+-- Calculate frame height considering minimized state
 local frameHeight = headerHeight + padding + (#elements * buttonHeight) + ((#elements - 1) * buttonSpacing) + padding + 15
 
 local ScreenGui = Instance.new("ScreenGui")
@@ -12,14 +13,12 @@ ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
 local MainFrame = Instance.new("Frame")
 MainFrame.Parent = ScreenGui
-MainFrame.Size = UDim2.new(0, 160, 0, frameHeight)
+MainFrame.Size = UDim2.new(0, 160, 0, headerHeight + 10) -- Set initial minimized size
 MainFrame.Position = UDim2.new(0.5, -80, 0.5, -frameHeight / 2)
 MainFrame.BackgroundColor3 = Color3.fromRGB(25, 135, 190)
 MainFrame.BorderSizePixel = 0
 MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 MainFrame.Active = true
-MainFrame.Visible = true
-MainFrame.Draggable = true
 
 local UICornerMain = Instance.new("UICorner")
 UICornerMain.Parent = MainFrame
@@ -229,6 +228,8 @@ spawn(function()
 end)
 
 
+local isMinimized = false
+
 MinimizeButton.MouseButton1Click:Connect(function()
     isMinimized = not isMinimized
     if isMinimized then
@@ -252,9 +253,6 @@ MinimizeButton.MouseButton1Click:Connect(function()
 end)
 
 MainFrame.Visible = true
-
-MainFrame.Size = UDim2.new(0, 0, 0, 0) 
 MainFrame:TweenSize(UDim2.new(0, 160, 0, frameHeight), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.5, true)
-
 
 return Library
